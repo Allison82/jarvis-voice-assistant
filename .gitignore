@@ -1,0 +1,18 @@
+# 執行期私人資料，絕不上傳
+*.log
+run.out
+run.err
+.jarvis.lock
+__pycache__/
+*.pyc
+.cache_*
+# 語音檔：模型授權多為非商業，且屬個人產物；demo_*.ogg 以外一律不收
+voices/*.wav
+voices/*.mp3
+*.bak
+*.bak[0-9]
+# 真正的範本填好後也別上傳
+*.plist
+!launchd/*.plist.template
+.env
+access.json
