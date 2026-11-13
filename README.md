@@ -9,6 +9,28 @@
 
 ## 架構（四個零件）
 
+```mermaid
+flowchart TD
+    Mic["🎙️ 麥克風<br/>sounddevice + Silero VAD<br/>一直聽・濾雜音"]
+    Wake["⏰ 喚醒詞<br/>openwakeword｜hey jarvis"]
+    ASR["🦻 耳朵 STT<br/>NVIDIA Nemotron 3.5<br/>MLX・本機"]
+    VOCAB[("📒 字庫 VOCAB<br/>hotwords 專有名詞")]
+    Brain["🧠 腦<br/>claude -p --strict-mcp-config<br/>快腦判斷：答／等／略過／深想"]
+    Decide{"是在跟它說話<br/>而且講完了？"}
+    Skip["🤐 輸出 &#91;&#91;SKIP&#93;&#93;<br/>不出聲"]
+    TTS["🗣️ 嘴 TTS<br/>Breeze-TTS-2 台灣口音<br/>MLX・本機・逐句串流"]
+    Speaker["🔊 喇叭<br/>第一聲約 1 秒"]
+
+    Mic --> Wake --> ASR --> Brain
+    VOCAB -. 餵詞 .-> ASR
+    Brain --> Decide
+    Decide -- 否 --> Skip
+    Decide -- 是 --> TTS --> Speaker
+```
+
+> 收音、辨識（耳）、判斷（腦）、合成（嘴）**全在自己的 Mac 上跑，不上雲**。
+> 腦用 `--strict-mcp-config` 開，不載入任何 MCP 外掛，所以不會跟常駐的 Telegram bot 搶連線。
+
 | 零件 | 用什麼 | 說明 |
 |------|--------|------|
 | 👂 收音 | `sounddevice` + Silero VAD | 一直聽麥克風；打字聲、風扇、電視雜音靠 VAD 濾掉 |
